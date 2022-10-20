@@ -4,8 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,10 +36,39 @@ public class Main {
             System.out.println(jsonArray);
             File csvFile = new File("E:/qq_nav.csv");
             csvFile.createNewFile();
-            BufferedWriter csvWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile), "gb2312"), 1024);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            BufferedWriter csvWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile), "gbk"), 1024);
+
+            for (int i=0; i < jsonArray.length(); i++) {
+                JSONArray item = new JSONArray(jsonArray.get(i).toString());
+                JSONObject object;
+                Iterator keyIterator;
+                if (i ==0 ) {
+                    for (int j=0; j < item.length(); j++) {
+                        object = new JSONObject(item.get(j).toString());
+                        keyIterator = object.keys();
+                        while (keyIterator.hasNext()) {
+                            var name = keyIterator.next().toString();
+                            csvWriter.write(name);
+                            if (j < item.length()-1) csvWriter.write(",");
+                            if (j == item.length()-1) csvWriter.write("\n");
+
+                        }
+                    }
+                }
+
+                for (int j=0; j < item.length(); j++) {
+                    object = new JSONObject(item.get(j).toString());
+                    keyIterator = object.keys();
+                    while (keyIterator.hasNext()) {
+                        var name = keyIterator.next().toString();
+                        csvWriter.write(object.get(name).toString());
+                        if (j < item.length()-1) csvWriter.write(",");
+                        if (j == item.length()-1) csvWriter.write("\n");
+                    }
+                }
+            }
+            csvWriter.flush();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
