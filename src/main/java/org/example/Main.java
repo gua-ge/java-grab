@@ -84,6 +84,7 @@ public class Main {
                     break;
                 }
             }
+            csvReader.close();
 
             //扩展
         } catch (Exception e) {
